@@ -2,7 +2,7 @@
 Cesar Sepulveda
 CPSC 323 Section 4
 Project #3
-12/13/2019
+12/16/2019
 ------------------------------------------------------------------------------*/
 //Including libraries for the program
 #include <iostream>
@@ -374,24 +374,36 @@ void identify(vector<int> lex, vector<string> input, fstream& myFile){
 //Symbol Table function
 void symbolTable(vector<int> vec, vector<string> newInput, fstream& myFile){
   int address = 5000;
-  cout << "Symbol Table" << endl;
-  cout << setw(10) << "Identifier"  <<"Memory Location" << setw(10) << "Type" << endl;
+  myFile << "Symbol Table" << endl;
+  myFile << "Identifier" << setw(20) <<"Memory Location" << setw(10) << "Type" << endl;
   for(int i = 0; i < vec.size();i++){
     if(vec.at(i) == -11){
       if(newInput.at(i).compare("int") == 0){
-        while(){
+        while(i+1 < vec.size() && vec.at(i) != -16){
           if(vec.at(i) == -12){
-            cout << newInput.at(i+1) << " " << address << " integer" << endl;
+            myFile << newInput.at(i) << setw(18) << address << setw(22) << " integer" << endl;
             ++address;
-            ++i;
           }
+          ++i;
         }
       }
       if(newInput.at(i).compare("float") == 0){
-
+        while(i+1 < vec.size() && vec.at(i) != -16){
+          if(vec.at(i) == -12){
+            myFile << newInput.at(i) << setw(18) << address << setw(22) << " float" << endl;
+            ++address;
+          }
+          ++i;
+        }
       }
       if(newInput.at(i).compare("bool") == 0){
-
+        while(i+1 < vec.size() && vec.at(i) != -16){
+          if(vec.at(i) == -12){
+            myFile << newInput.at(i) << setw(18) << address << setw(22) << " bool" << endl;
+            ++address;
+          }
+          ++i;
+        }
       }
     }
   }
@@ -468,12 +480,5 @@ int main(){
   }
   //identify(vec, newInput, myFile);
   symbolTable(vec,newInput,myFile);
-  myFile.close();
-  for(int i = 0; i < newInput.size(); i++){
-    cout << newInput.at(i) <<endl;
-  }
-  for(int i = 0; i < vec.size(); i++){
-    cout << vec.at(i) <<endl;
-  }
   return 0;
 }
