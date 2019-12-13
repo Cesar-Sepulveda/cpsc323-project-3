@@ -480,5 +480,6 @@ int main(){
   }
   //identify(vec, newInput, myFile);
   symbolTable(vec,newInput,myFile);
+  myFile.close();
   return 0;
 }
