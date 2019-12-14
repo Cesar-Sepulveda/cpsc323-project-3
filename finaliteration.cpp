@@ -215,6 +215,12 @@ bool initialization(int num, vector<int> lex, vector<string> input, int& count){
     if(num+2 < lex.size() && lex.at(num+1) == -12 && lex.at(num+2) == -16){
       match = true;
       count = num+2;
+    }else if(num+2 < lex.size() && lex.at(num+1) == -12 && lex.at(num+2) == -10){
+      match = true;
+      while(lex.at(num) != -16){
+        ++num;
+      }
+      count = num;
     }
   }
   return match;
@@ -498,3 +504,4 @@ int main(){
   myFile.close();
   return 0;
 }
+
