@@ -2,7 +2,7 @@
 Cesar Sepulveda
 CPSC 323 Section 4
 Project #3
-12/16/2019
+12/13/2019
 ------------------------------------------------------------------------------*/
 //Including libraries for the program
 #include <iostream>
@@ -197,15 +197,24 @@ vector<string> lexer(vector<string> input){
 //Function that checks for an assignment statement
 bool assignment(int num, vector<int> lex, vector<string> input){
   bool match = false;
-  if(num+3 < lex.size()){
-    if(lex.at(num) == -12){
-      if(input.at(num+1).compare("=") == 0){
-        if(lex.at(num+2) == -12){
-          if(input.at(num+3).compare(";") == 0){
-            match = true;
-          }
-        }
+  if(lex.at(num) == -12){
+    if(num+1 < lex.size() && lex.at(num+1) == -13){
+      if(num+3 < lex.size() && lex.at(num+2) == -9 && lex.at(num+3) == -16){
+        match = true;
       }
+    }
+  }
+  return match;
+}
+
+//------------------------------------------------------------------------------
+//Function that checks for initialization statement
+bool initialization(int num, vector<int> lex, vector<string> input, int& count){
+  bool match = false;
+  if(lex.at(num) == -11){
+    if(num+2 < lex.size() && lex.at(num+1) == -12 && lex.at(num+2) == -16){
+      match = true;
+      count = num+2;
     }
   }
   return match;
@@ -328,6 +337,7 @@ void print(int lines, string op, vector<string> input, int i,fstream& myFile){
 void identify(vector<int> lex, vector<string> input, fstream& myFile){
   int match = 0;
   int lines = 1;
+  int intCount = 0;
   for(int i = 0; i < lex.size(); ++i){
     match = -1;
     if(lex.at(i) == -14 || input.at(i).compare("!") == 0){
@@ -361,6 +371,11 @@ void identify(vector<int> lex, vector<string> input, fstream& myFile){
       i = i+5;
       match = 1;
       ++lines;
+    }else if(initialization(i,lex,input, intCount)){
+
+      match = 1;
+      i=i+intCount;
+      intCount = 0;
     }
     if(match == -1){
       myFile << "Line #" << lines << ":" << endl;
@@ -478,7 +493,7 @@ int main(){
       vec.push_back(-9);                 // other = -9
     }
   }
-  //identify(vec, newInput, myFile);
+  identify(vec, newInput, myFile);
   symbolTable(vec,newInput,myFile);
   myFile.close();
   return 0;
