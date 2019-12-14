@@ -2,7 +2,7 @@
 Cesar Sepulveda
 CPSC 323 Section 4
 Project #3
-12/13/2019
+12/16/2019
 ------------------------------------------------------------------------------*/
 //Including libraries for the program
 #include <iostream>
@@ -211,16 +211,19 @@ bool assignment(int num, vector<int> lex, vector<string> input){
 //Function that checks for initialization statement
 bool initialization(int num, vector<int> lex, vector<string> input, int& count){
   bool match = false;
+  int num2 = 0;
   if(lex.at(num) == -11){
     if(num+2 < lex.size() && lex.at(num+1) == -12 && lex.at(num+2) == -16){
       match = true;
       count = num+2;
     }else if(num+2 < lex.size() && lex.at(num+1) == -12 && lex.at(num+2) == -10){
       match = true;
+      num2+=2;
       while(lex.at(num) != -16){
         ++num;
+        ++num2;
       }
-      count = num;
+      count = num - num2;
     }
   }
   return match;
