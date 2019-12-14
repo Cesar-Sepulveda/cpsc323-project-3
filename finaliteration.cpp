@@ -316,26 +316,17 @@ bool division(int num, vector<int> lex, vector<string> input){
 
 //------------------------------------------------------------------------------
 //Print Function
-void print(int lines, string op, vector<string> input, int i,fstream& myFile){
-  myFile << "Line #" << lines << ":" << endl;
-  myFile << "Token: Identifier" << setw(10) << "Lexeme: " << input.at(i) << endl;
-  myFile << "<Statement> -> <Assign>" << endl;
-  myFile << "<Assign> -> <Identifier> = <Expression> ;" << endl;
-  myFile << "Token: Operator" << setw(13) << "Lexeme: =" << endl;
-  myFile << "Token: Identifier" << setw(10) << "Lexeme: " << input.at(i+2) << endl;
-  myFile << "<Expression> -> <Term> <Expression Prime>" << endl;
-  myFile << "<Term> -> <Factor> <Term Prime>" << endl;
-  myFile << "<Factor> -> <Identifier>" << endl;
-  myFile << "Token: Operator" << setw(13) << "Lexeme: " << op << endl;
-  myFile << "<Term Prime> -> ε" << endl;
-  myFile << "<Expression Prime> -> + <Term> <Expression Prime>" << endl;
-  myFile << "Token: Identifier" << setw(10) << "Lexeme: " << input.at(i+4) << endl;
-  myFile << "<Term> -> <Factor> <Term Prime>" << endl;
-  myFile << "<Factor> -> <Identifier>" << endl;
-  myFile << "Token: separator" << setw(12) << "Lexeme: ;" << endl;
-  myFile << "<Term Prime> -> ε" << endl;
-  myFile << "<Expression Prime> -> ε" << endl;
-  myFile << endl;
+void print(string op, int& count, int &lines, fstream& myFile){
+  int address = 5000 + count;
+  myFile << lines << setw(10) << "PUSHM" << setw(8) << address << endl;
+  address++;
+  lines++;
+  myFile << lines << setw(10) << "PUSHM" << setw(8) << address << endl;
+  address++;
+  lines++;
+  myFile << lines << setw(8) << op << endl;
+  lines++;
+  myFile << lines << setw(9) << "POPM" << setw(9) << address << endl;
 }
 
 //------------------------------------------------------------------------------
@@ -343,42 +334,43 @@ void print(int lines, string op, vector<string> input, int i,fstream& myFile){
 void identify(vector<int> lex, vector<string> input, fstream& myFile){
   int match = 0;
   int lines = 1;
+  int address = 5000;
+  int count = 0;
   int intCount = 0;
   for(int i = 0; i < lex.size(); ++i){
     match = -1;
     if(lex.at(i) == -14 || input.at(i).compare("!") == 0){
       match = 1;
     }else if(assignment(i,lex,input)){
-      myFile << "Line #" << lines << ":" <<endl;
-      myFile << "Token: Identifier" << setw(10) << "Lexeme: " << input.at(i) << endl;
-      myFile << "Token: Operator" << setw(13) << "Lexeme: =" << endl;
-      myFile << "Token: Identifier" << setw(10) << "Lexeme: " << input.at(i+2) << endl;
-      myFile << "Token: Separator" << setw(12) << "Lexeme: ;" << endl;
+      myFile << lines << setw(10) << "PUSHI" << setw(5) << input.at(i+2) << endl;
+      ++lines;
+      myFile << lines << setw(10) << "PUSHI" << setw(8) << address << endl;
+      ++address;
       i = i+3;
       match = 1;
       ++lines;
+      ++count;
     }else if(addition(i,lex,input)){
-      print(lines, "+", input,i,myFile);
+      print("ADD", count, lines, myFile);
       i = i+5;
       match = 1;
       ++lines;
     }else if(subtraction(i,lex,input)){
-      print(lines, "-", input,i,myFile);
+      print("SUBTRACT", count, lines, myFile);
       i = i+5;
       match = 1;
       ++lines;
     }else if(multiplication(i,lex,input)){
-      print(lines, "*", input,i,myFile);
+      print("MULTIPLY", count, lines, myFile);
       i = i+5;
       match = 1;
       ++lines;
     }else if(division(i,lex,input)){
-      print(lines, "/", input,i,myFile);
+      print("DIVIDE", count, lines, myFile);
       i = i+5;
       match = 1;
       ++lines;
     }else if(initialization(i,lex,input, intCount)){
-
       match = 1;
       i=i+intCount;
       intCount = 0;
@@ -395,6 +387,7 @@ void identify(vector<int> lex, vector<string> input, fstream& myFile){
 //Symbol Table function
 void symbolTable(vector<int> vec, vector<string> newInput, fstream& myFile){
   int address = 5000;
+  myFile << endl;
   myFile << "Symbol Table" << endl;
   myFile << "Identifier" << setw(20) <<"Memory Location" << setw(10) << "Type" << endl;
   for(int i = 0; i < vec.size();i++){
@@ -504,4 +497,3 @@ int main(){
   myFile.close();
   return 0;
 }
-
